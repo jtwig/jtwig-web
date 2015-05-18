@@ -4,6 +4,7 @@ import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.jtwig.configuration.Configuration;
 import org.jtwig.resource.Resource;
+import org.jtwig.web.servlet.model.factory.*;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -16,6 +17,12 @@ public class JtwigResourceDispatcher {
     private final JtwigModel model = new JtwigModel();
     private final Configuration configuration;
     private final Resource resource;
+    private final ApplicationFactory applicationFactory = new ApplicationFactory(new HttpRequestFactory(
+            new FormParametersFactory(),
+            new QueryStringParametersFactory(),
+            new SessionParametersFactory(),
+            new CookieParametersFactory()
+    ));
 
     public JtwigResourceDispatcher(Configuration configuration, Resource resource) {
         this.configuration = configuration;
@@ -31,6 +38,7 @@ public class JtwigResourceDispatcher {
         fillModelWithRequest(request);
         ServletRequestHolder.set(request);
         ServletResponseHolder.set(response);
+        model.with("app", applicationFactory.create(request));
         new JtwigTemplate(resource, configuration)
                 .render(model, response.getOutputStream());
     }
