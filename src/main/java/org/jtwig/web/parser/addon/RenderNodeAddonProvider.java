@@ -2,7 +2,7 @@ package org.jtwig.web.parser.addon;
 
 import org.jtwig.parser.addon.AddonParserProvider;
 import org.jtwig.parser.parboiled.node.AddonParser;
-import org.jtwig.web.parser.RenderNodeParser;
+import org.jtwig.web.parser.parboiled.RenderNodeParser;
 
 import java.util.Collection;
 

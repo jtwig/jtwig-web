@@ -35,7 +35,7 @@ public class JtwigResourceDispatcher {
     }
 
     public void render(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        fillModelWithRequest(request);
+        fillModelWithAttributes(request);
         ServletRequestHolder.set(request);
         ServletResponseHolder.set(response);
         model.with("app", applicationFactory.create(request));
@@ -43,7 +43,7 @@ public class JtwigResourceDispatcher {
                 .render(model, response.getOutputStream());
     }
 
-    private void fillModelWithRequest(ServletRequest request) {
+    private void fillModelWithAttributes(ServletRequest request) {
         Enumeration<String> attributeNames = request.getAttributeNames();
         while (attributeNames.hasMoreElements()) {
             String element = attributeNames.nextElement();

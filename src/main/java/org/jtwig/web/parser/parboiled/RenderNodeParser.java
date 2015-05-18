@@ -1,4 +1,4 @@
-package org.jtwig.web.parser;
+package org.jtwig.web.parser.parboiled;
 
 import com.google.common.base.Optional;
 import org.jtwig.parser.parboiled.ParserContext;
