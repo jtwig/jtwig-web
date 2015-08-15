@@ -3,7 +3,7 @@ package org.jtwig.web.servlet;
 import org.apache.http.client.fluent.Request;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.jtwig.configuration.ConfigurationBuilder;
+import org.jtwig.environment.EnvironmentConfigurationBuilder;
 import org.junit.Test;
 
 import javax.servlet.ServletException;
@@ -33,7 +33,7 @@ public class RenderExpressionTest extends AbstractIntegrationTest {
 
 
     public static class HelloServlet extends HttpServlet {
-        private final JtwigRenderer renderer = new JtwigRenderer(ConfigurationBuilder.configuration());
+        private final JtwigRenderer renderer = new JtwigRenderer(EnvironmentConfigurationBuilder.configuration());
 
         @Override
         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -44,7 +44,7 @@ public class RenderExpressionTest extends AbstractIntegrationTest {
 
 
     public static class RenderServlet extends HttpServlet {
-        private final JtwigRenderer renderer = new JtwigRenderer(ConfigurationBuilder.configuration());
+        private final JtwigRenderer renderer = new JtwigRenderer(EnvironmentConfigurationBuilder.configuration());
 
         @Override
         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

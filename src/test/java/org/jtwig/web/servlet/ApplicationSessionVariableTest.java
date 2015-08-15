@@ -5,7 +5,7 @@ import org.eclipse.jetty.server.session.HashSessionManager;
 import org.eclipse.jetty.server.session.SessionHandler;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.jtwig.configuration.ConfigurationBuilder;
+import org.jtwig.environment.EnvironmentConfigurationBuilder;
 import org.junit.Test;
 
 import javax.servlet.ServletException;
@@ -37,7 +37,7 @@ public class ApplicationSessionVariableTest extends AbstractIntegrationTest {
 
 
     public static class HelloServlet extends HttpServlet {
-        private final JtwigRenderer renderer = new JtwigRenderer(ConfigurationBuilder.configuration());
+        private final JtwigRenderer renderer = new JtwigRenderer(EnvironmentConfigurationBuilder.configuration());
 
         @Override
         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

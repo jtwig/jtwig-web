@@ -2,8 +2,9 @@ package org.jtwig.web.servlet;
 
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
-import org.jtwig.configuration.Configuration;
-import org.jtwig.web.resource.WebResource;
+import org.jtwig.environment.Environment;
+import org.jtwig.resource.Resource;
+import org.jtwig.util.OptionalUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -11,14 +12,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Enumeration;
+import java.util.Map;
 
 public class JtwigDispatcher {
     private final JtwigModel model = new JtwigModel();
-    private final Configuration configuration;
+    private final Environment environment;
     private final String location;
 
-    public JtwigDispatcher(Configuration configuration, String location) {
-        this.configuration = configuration;
+    public JtwigDispatcher(Environment environment, String location) {
+        this.environment = environment;
         this.location = location;
     }
 
@@ -27,13 +29,23 @@ public class JtwigDispatcher {
         return this;
     }
 
+    public JtwigDispatcher with (Map<String, Object> values) {
+        for (Map.Entry<String, Object> entry : values.entrySet()) {
+            this.model.with(entry.getKey(), entry.getValue());
+        }
+        return this;
+    }
+
     public void render(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         fillModelWithRequest(request);
+
         ServletRequestHolder.set(request);
         ServletResponseHolder.set(response);
-        new JtwigTemplate(new WebResource(request.getServletContext()
-                .getResource(location)), configuration)
-                .render(model, response.getOutputStream());
+
+        Resource resource = environment.resourceResolver().resolve(null, location)
+                .or(OptionalUtils.<Resource>throwException("Unable to load resource %s"));
+
+        new JtwigTemplate(resource, environment).render(model, response.getOutputStream());
     }
 
     private void fillModelWithRequest(ServletRequest request) {

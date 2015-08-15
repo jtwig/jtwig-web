@@ -2,7 +2,7 @@ package org.jtwig.web.servlet;
 
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
-import org.jtwig.configuration.Configuration;
+import org.jtwig.environment.Environment;
 import org.jtwig.resource.Resource;
 import org.jtwig.web.servlet.model.factory.*;
 
@@ -15,7 +15,7 @@ import java.util.Enumeration;
 
 public class JtwigResourceDispatcher {
     private final JtwigModel model = new JtwigModel();
-    private final Configuration configuration;
+    private final Environment environment;
     private final Resource resource;
     private final ApplicationFactory applicationFactory = new ApplicationFactory(new HttpRequestFactory(
             new FormParametersFactory(),
@@ -24,8 +24,8 @@ public class JtwigResourceDispatcher {
             new CookieParametersFactory()
     ));
 
-    public JtwigResourceDispatcher(Configuration configuration, Resource resource) {
-        this.configuration = configuration;
+    public JtwigResourceDispatcher(Environment environment, Resource resource) {
+        this.environment = environment;
         this.resource = resource;
     }
 
@@ -39,7 +39,7 @@ public class JtwigResourceDispatcher {
         ServletRequestHolder.set(request);
         ServletResponseHolder.set(response);
         model.with("app", applicationFactory.create(request));
-        new JtwigTemplate(resource, configuration)
+        new JtwigTemplate(resource, environment)
                 .render(model, response.getOutputStream());
     }
 

@@ -1,35 +1,29 @@
 package org.jtwig.web.resource;
 
 import org.jtwig.resource.Resource;
-import org.jtwig.resource.exceptions.ResourceException;
+import org.jtwig.web.servlet.ServletRequestHolder;
 
+import javax.servlet.ServletContext;
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 public class WebResource implements Resource {
-    private final URL resource;
+    private final String location;
 
-    public WebResource(URL resource) {
-        this.resource = resource;
+    public WebResource(String location) {
+        this.location = location;
     }
 
     @Override
     public InputStream content() {
-        try {
-            return resource.openStream();
-        } catch (IOException e) {
-            throw new ResourceException(String.format("Cannot read resource %s", resource), e);
-        }
+        return getServletContext().getResourceAsStream(location);
+    }
+
+    protected ServletContext getServletContext() {
+        return ServletRequestHolder.get().getServletContext();
     }
 
     public File getFile() {
-        try {
-            return new File(resource.toURI());
-        } catch (URISyntaxException e) {
-            throw new ResourceException(String.format("Unable to get file from URL %s", resource), e);
-        }
+        return new File(location);
     }
 }
