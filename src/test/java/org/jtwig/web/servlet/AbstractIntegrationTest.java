@@ -15,8 +15,6 @@ public abstract class AbstractIntegrationTest {
 
     @Before
     public void setUp() throws Exception {
-//        System.setProperty(org.slf4j.impl.SimpleLogger.DEFAULT_LOG_LEVEL_KEY, "TRACE");
-
         server = new Server(0);
         ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/");

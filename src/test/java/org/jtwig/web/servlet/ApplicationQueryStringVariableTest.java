@@ -31,7 +31,7 @@ public class ApplicationQueryStringVariableTest extends AbstractIntegrationTest 
 
 
     public static class HelloServlet extends HttpServlet {
-        private final JtwigRenderer renderer = new JtwigRenderer(EnvironmentConfigurationBuilder.configuration());
+        private final JtwigRenderer renderer = new JtwigRenderer(EnvironmentConfigurationBuilder.configuration().build());
 
         @Override
         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
