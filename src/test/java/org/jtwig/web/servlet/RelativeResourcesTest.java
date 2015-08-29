@@ -33,7 +33,7 @@ public class RelativeResourcesTest extends AbstractIntegrationTest {
 
 
     public static class RelativeResourcesServlet extends HttpServlet {
-        private final JtwigRenderer renderer = new JtwigRenderer(EnvironmentConfigurationBuilder.configuration());
+        private final JtwigRenderer renderer = new JtwigRenderer(EnvironmentConfigurationBuilder.configuration().build());
 
         @Override
         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
