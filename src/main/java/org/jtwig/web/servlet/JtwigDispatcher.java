@@ -43,7 +43,7 @@ public class JtwigDispatcher {
         ServletResponseHolder.set(response);
 
         Resource resource = environment.resourceResolver().resolve(null, location)
-                .or(OptionalUtils.<Resource>throwException("Unable to load resource %s"));
+                .or(OptionalUtils.<Resource>throwException(String.format("Unable to load resource %s", location)));
 
         new JtwigTemplate(resource, environment).render(model, response.getOutputStream());
     }
