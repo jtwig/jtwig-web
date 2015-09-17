@@ -5,10 +5,8 @@ import org.jtwig.environment.EnvironmentConfiguration;
 import org.jtwig.environment.EnvironmentConfigurationBuilder;
 import org.jtwig.environment.EnvironmentFactory;
 import org.jtwig.resource.StringResource;
-import org.jtwig.web.functions.WebFunctions;
+import org.jtwig.web.functions.PathFunction;
 import org.jtwig.web.resource.resolver.WebResourceResolver;
-
-import java.util.Collections;
 
 public class JtwigRenderer {
     private final Environment environment;
@@ -17,7 +15,7 @@ public class JtwigRenderer {
         EnvironmentFactory environmentFactory = new EnvironmentFactory();
         this.environment = environmentFactory.create(new EnvironmentConfigurationBuilder(configuration)
                 .resources().withResourceResolver(new WebResourceResolver()).and()
-                .functions().withBeans(Collections.<Object>singletonList(new WebFunctions())).and()
+                .functions().withFunction(new PathFunction()).and()
                 .build());
     }
 
