@@ -42,7 +42,7 @@ public class JtwigDispatcher {
         ServletRequestHolder.set(request);
         ServletResponseHolder.set(response);
 
-        Resource resource = environment.resourceResolver().resolve(null, location)
+        Resource resource = environment.resources().getResourceResolver().resolve(environment, null, location)
                 .or(OptionalUtils.<Resource>throwException(String.format("Unable to load resource %s", location)));
 
         new JtwigTemplate(resource, environment).render(model, response.getOutputStream());
