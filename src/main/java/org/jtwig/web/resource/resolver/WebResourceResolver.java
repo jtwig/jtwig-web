@@ -1,6 +1,7 @@
 package org.jtwig.web.resource.resolver;
 
 import com.google.common.base.Optional;
+import org.jtwig.environment.Environment;
 import org.jtwig.resource.Resource;
 import org.jtwig.resource.exceptions.ResourceException;
 import org.jtwig.resource.resolver.ResourceResolver;
@@ -15,8 +16,12 @@ import java.net.URL;
 public class WebResourceResolver implements ResourceResolver {
     public static final String PREFIX = "web:";
 
+    protected ServletContext getServletContext() {
+        return ServletRequestHolder.get().getServletContext();
+    }
+
     @Override
-    public Optional<Resource> resolve(Resource resource, String relativePath) {
+    public Optional<Resource> resolve(Environment environment, Resource resource, String relativePath) {
         if (relativePath.startsWith(PREFIX)) {
             relativePath = relativePath.substring(PREFIX.length());
         }
@@ -26,20 +31,20 @@ public class WebResourceResolver implements ResourceResolver {
             if(resource instanceof WebResource) {
                 File parentFile = ((WebResource)resource).getFile().getParentFile();
                 File file = new File(parentFile, relativePath);
-                return this.resolve(file);
+                return this.resolve(environment, file);
             } else {
                 return Optional.absent();
             }
         } else {
-            return this.resolve(relativeFile);
+            return this.resolve(environment, relativeFile);
         }
     }
 
-    private Optional<Resource> resolve(File relativeFile) {
+    private Optional<Resource> resolve(Environment environment, File relativeFile) {
         try {
             Optional<URL> optional = Optional.fromNullable(getServletContext().getResource(relativeFile.getPath()));
             if (optional.isPresent()) {
-                return Optional.<Resource>of(new WebResource(relativeFile.getPath()));
+                return Optional.<Resource>of(new WebResource(environment.resources().getDefaultInputCharset(), relativeFile.getPath()));
             } else {
                 return Optional.absent();
             }
@@ -47,9 +52,4 @@ public class WebResourceResolver implements ResourceResolver {
             throw new ResourceException(String.format("Unable to resolve URL from file %s", relativeFile), e);
         }
     }
-
-    protected ServletContext getServletContext() {
-        return ServletRequestHolder.get().getServletContext();
-    }
-
 }

@@ -6,17 +6,15 @@ import org.jtwig.web.servlet.ServletRequestHolder;
 import javax.servlet.ServletContext;
 import java.io.File;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 
 public class WebResource implements Resource {
     private final String location;
+    private final Charset charset;
 
-    public WebResource(String location) {
+    public WebResource(Charset charset, String location) {
+        this.charset = charset;
         this.location = location;
-    }
-
-    @Override
-    public InputStream content() {
-        return getServletContext().getResourceAsStream(location);
     }
 
     protected ServletContext getServletContext() {
@@ -25,5 +23,15 @@ public class WebResource implements Resource {
 
     public File getFile() {
         return new File(location);
+    }
+
+    @Override
+    public InputStream getContent() {
+        return getServletContext().getResourceAsStream(location);
+    }
+
+    @Override
+    public Charset getCharset() {
+        return charset;
     }
 }
