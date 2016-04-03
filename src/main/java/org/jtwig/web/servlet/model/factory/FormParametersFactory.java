@@ -13,10 +13,10 @@ import java.util.Map;
 public class FormParametersFactory {
     public Map<String, Object> create (HttpServletRequest request) {
         HashMap<String, Object> hashMap = new HashMap<>();
-        List<NameValuePair> nameValuePairs = URLEncodedUtils.parse(request.getRequestURI(), Charset.defaultCharset());
+        List<NameValuePair> queryParameters = URLEncodedUtils.parse(request.getRequestURI(), Charset.defaultCharset());
         Map<String, String[]> parameterMap = request.getParameterMap();
         for (Map.Entry<String, String[]> entry : parameterMap.entrySet()) {
-            if (!containsKey(nameValuePairs, entry.getKey())) {
+            if (!isQueryParameter(queryParameters, entry.getKey())) {
                 if (entry.getValue().length == 1) {
                     hashMap.put(entry.getKey(), entry.getValue()[0]);
                 } else {
@@ -31,7 +31,7 @@ public class FormParametersFactory {
         return hashMap;
     }
 
-    private boolean containsKey(List<NameValuePair> nameValuePairs, String key) {
+    private boolean isQueryParameter(List<NameValuePair> nameValuePairs, String key) {
         for (NameValuePair nameValuePair : nameValuePairs) {
             if (key.equals(nameValuePair.getName())) {
                 return true;

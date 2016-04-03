@@ -1,4 +1,4 @@
-package org.jtwig.web.servlet;
+package org.jtwig.web.integration;
 
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.fluent.Request;
@@ -6,6 +6,7 @@ import org.apache.http.message.BasicNameValuePair;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.jtwig.environment.EnvironmentConfigurationBuilder;
+import org.jtwig.web.servlet.JtwigRenderer;
 import org.junit.Test;
 
 import javax.servlet.ServletException;
@@ -25,7 +26,7 @@ public class ApplicationFormVariableTest extends AbstractIntegrationTest {
                 .body(new UrlEncodedFormEntity(asList(new BasicNameValuePair("one", "two"))))
                 .execute().returnContent().asString();
 
-        assertThat(content, is("Hello two!"));
+        assertThat(content, is("Hello two three four!"));
     }
 
     @Override
@@ -39,7 +40,9 @@ public class ApplicationFormVariableTest extends AbstractIntegrationTest {
 
         @Override
         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-            renderer.inlineDispatcherFor("Hello {{ app.request.parameter.get('one') }}!")
+            request.setAttribute("one", "four");
+            renderer.inlineDispatcherFor("Hello {{ app.request.parameter.get('one') ~ another ~ one }}!")
+                    .with("another", " three ")
                     .render(request, response);
         }
     }

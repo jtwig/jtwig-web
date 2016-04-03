@@ -39,7 +39,7 @@ public class JtwigResourceDispatcher {
         ServletRequestHolder.set(request);
         ServletResponseHolder.set(response);
         model.with("app", applicationFactory.create(request));
-        new JtwigTemplate(resource, environment)
+        new JtwigTemplate(environment, resource)
                 .render(model, response.getOutputStream());
     }
 

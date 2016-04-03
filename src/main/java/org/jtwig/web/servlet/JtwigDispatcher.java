@@ -1,10 +1,10 @@
 package org.jtwig.web.servlet;
 
+import com.google.common.base.Optional;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.jtwig.environment.Environment;
 import org.jtwig.resource.Resource;
-import org.jtwig.util.OptionalUtils;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -42,10 +42,12 @@ public class JtwigDispatcher {
         ServletRequestHolder.set(request);
         ServletResponseHolder.set(response);
 
-        Resource resource = environment.resources().getResourceResolver().resolve(environment, null, location)
-                .or(OptionalUtils.<Resource>throwException(String.format("Unable to load resource %s", location)));
-
-        new JtwigTemplate(resource, environment).render(model, response.getOutputStream());
+        Optional<Resource> optional = environment.getResourceEnvironment().getResourceResolver().resolve(environment, null, location);
+        if (optional.isPresent()) {
+            new JtwigTemplate(environment, optional.get()).render(model, response.getOutputStream());
+        } else {
+            throw new IllegalArgumentException(String.format("Unable to load resource '%s'", location));
+        }
     }
 
     private void fillModelWithRequest(ServletRequest request) {

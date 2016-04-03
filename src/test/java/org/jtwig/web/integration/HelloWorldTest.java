@@ -1,9 +1,10 @@
-package org.jtwig.web.servlet;
+package org.jtwig.web.integration;
 
 import org.apache.http.client.fluent.Request;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.jtwig.environment.EnvironmentConfigurationBuilder;
+import org.jtwig.web.servlet.JtwigRenderer;
 import org.junit.Test;
 
 import javax.servlet.ServletException;
@@ -15,13 +16,15 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-public class ApplicationQueryStringVariableTest extends AbstractIntegrationTest {
+public class HelloWorldTest extends AbstractIntegrationTest {
+
+
     @Test
-    public void variableTest() throws Exception {
-        String content = Request.Post(serverUrl() + "?one=three")
+    public void helloWorldTest() throws Exception {
+        String content = Request.Get(serverUrl())
                 .execute().returnContent().asString();
 
-        assertThat(content, is("Hello three!"));
+        assertThat(content, is("Hello Jtwigtwo!"));
     }
 
     @Override
@@ -35,7 +38,10 @@ public class ApplicationQueryStringVariableTest extends AbstractIntegrationTest 
 
         @Override
         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-            renderer.inlineDispatcherFor("Hello {{ app.request.query.get('one') }}!")
+            request.setAttribute("one", "two");
+
+            renderer.dispatcherFor("/WEB-INF/templates/example.twig")
+                    .with("name", "Jtwig")
                     .render(request, response);
         }
     }

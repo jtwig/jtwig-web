@@ -1,9 +1,10 @@
-package org.jtwig.web.servlet;
+package org.jtwig.web.integration;
 
 import org.apache.http.client.fluent.Request;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.jtwig.environment.EnvironmentConfigurationBuilder;
+import org.jtwig.web.servlet.JtwigRenderer;
 import org.junit.Test;
 
 import javax.servlet.ServletException;
@@ -15,30 +16,28 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-public class RelativeResourcesTest extends AbstractIntegrationTest {
-
+public class PathFunctionTest extends AbstractIntegrationTest {
     @Test
-    public void relativeResourcesTest() throws Exception {
-        String content = Request.Get(serverUrl())
+    public void pathTest() throws Exception {
+
+        String content = Request.Get(String.format("%s/hello", serverUrl()))
                 .execute().returnContent().asString();
 
-        assertThat(content, is("Hello Jtwig!"));
+        assertThat(content, is("/hello - /hello/one"));
     }
 
     @Override
     protected void setUpContext(ServletContextHandler context) {
-        context.addServlet(new ServletHolder(new RelativeResourcesServlet()), "/*");
+        context.setContextPath("/hello");
+        context.addServlet(new ServletHolder(new PathTestServlet()), "/*");
     }
 
-
-
-    public static class RelativeResourcesServlet extends HttpServlet {
+    public static class PathTestServlet extends HttpServlet {
         private final JtwigRenderer renderer = new JtwigRenderer(EnvironmentConfigurationBuilder.configuration().build());
 
         @Override
         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-            renderer.dispatcherFor("/WEB-INF/templates/relative.twig")
-                    .with("name", "Jtwig")
+            renderer.inlineDispatcherFor("{{ path() }} - {{ path('/one') }}")
                     .render(request, response);
         }
     }

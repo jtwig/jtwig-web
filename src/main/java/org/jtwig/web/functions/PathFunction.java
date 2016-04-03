@@ -1,6 +1,6 @@
 package org.jtwig.web.functions;
 
-import org.jtwig.functions.JtwigFunctionRequest;
+import org.jtwig.functions.FunctionRequest;
 import org.jtwig.functions.SimpleJtwigFunction;
 import org.jtwig.web.servlet.ServletRequestHolder;
 
@@ -13,13 +13,13 @@ public class PathFunction extends SimpleJtwigFunction {
     }
 
     @Override
-    public Object execute(JtwigFunctionRequest request) {
+    public Object execute(FunctionRequest request) {
         request.maximumNumberOfArguments(1);
 
         if (request.getNumberOfArguments() == 0) {
             return getHttpServletRequest().getContextPath();
         }
-        return getHttpServletRequest().getContextPath() + request.getArgument(0, String.class);
+        return getHttpServletRequest().getContextPath() + request.get(0);
     }
 
     protected HttpServletRequest getHttpServletRequest() {
