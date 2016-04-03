@@ -1,9 +1,10 @@
-package org.jtwig.web.servlet;
+package org.jtwig.web.integration;
 
 import org.apache.http.client.fluent.Request;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.jtwig.environment.EnvironmentConfigurationBuilder;
+import org.jtwig.web.servlet.JtwigRenderer;
 import org.junit.Test;
 
 import javax.servlet.ServletException;
@@ -15,11 +16,10 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-public class HelloWorldTest extends AbstractIntegrationTest {
-
+public class RelativeResourcesTest extends AbstractIntegrationTest {
 
     @Test
-    public void helloWorldTest() throws Exception {
+    public void relativeResourcesTest() throws Exception {
         String content = Request.Get(serverUrl())
                 .execute().returnContent().asString();
 
@@ -28,16 +28,17 @@ public class HelloWorldTest extends AbstractIntegrationTest {
 
     @Override
     protected void setUpContext(ServletContextHandler context) {
-        context.addServlet(new ServletHolder(new HelloServlet()), "/*");
+        context.addServlet(new ServletHolder(new RelativeResourcesServlet()), "/*");
     }
 
 
-    public static class HelloServlet extends HttpServlet {
+
+    public static class RelativeResourcesServlet extends HttpServlet {
         private final JtwigRenderer renderer = new JtwigRenderer(EnvironmentConfigurationBuilder.configuration().build());
 
         @Override
         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-            renderer.dispatcherFor("/WEB-INF/templates/example.twig")
+            renderer.dispatcherFor("/WEB-INF/templates/relative.twig")
                     .with("name", "Jtwig")
                     .render(request, response);
         }

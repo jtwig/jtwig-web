@@ -1,4 +1,4 @@
-package org.jtwig.web.servlet;
+package org.jtwig.web.integration;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.ServerConnector;

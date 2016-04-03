@@ -28,7 +28,7 @@ public class WebResourceResolver implements ResourceResolver {
 
         File relativeFile = new File(relativePath);
         if(!relativeFile.isAbsolute()) {
-            if(resource instanceof WebResource) {
+            if(WebResource.class.isAssignableFrom(resource.getClass())) {
                 File parentFile = ((WebResource)resource).getFile().getParentFile();
                 File file = new File(parentFile, relativePath);
                 return this.resolve(environment, file);
@@ -44,12 +44,12 @@ public class WebResourceResolver implements ResourceResolver {
         try {
             Optional<URL> optional = Optional.fromNullable(getServletContext().getResource(relativeFile.getPath()));
             if (optional.isPresent()) {
-                return Optional.<Resource>of(new WebResource(environment.resources().getDefaultInputCharset(), relativeFile.getPath()));
+                return Optional.<Resource>of(new WebResource(environment.getResourceEnvironment().getDefaultInputCharset(), relativeFile.getPath()));
             } else {
                 return Optional.absent();
             }
         } catch (MalformedURLException e) {
-            throw new ResourceException(String.format("Unable to resolve URL from file %s", relativeFile), e);
+            throw new ResourceException(String.format("Unable to resolve URL from file '%s'", relativeFile), e);
         }
     }
 }

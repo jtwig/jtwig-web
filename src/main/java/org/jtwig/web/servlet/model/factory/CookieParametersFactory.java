@@ -17,11 +17,12 @@ public class CookieParametersFactory {
                 if (result.containsKey(key)) {
                     final Object value = result.get(key);
                     if (value instanceof Collection) {
-                        ((Collection) value).add(value);
+                        ((Collection) value).add(cookie.getValue());
                     } else {
-                        result.put(key, new ArrayList() {{
-                            add(value);
-                        }});
+                        Collection list = new ArrayList();
+                        list.add(value);
+                        list.add(cookie.getValue());
+                        result.put(key, list);
                     }
                 } else {
                     result.put(key, cookie.getValue());

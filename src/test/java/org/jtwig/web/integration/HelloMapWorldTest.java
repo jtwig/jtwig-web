@@ -1,9 +1,11 @@
-package org.jtwig.web.servlet;
+package org.jtwig.web.integration;
 
+import com.google.common.collect.ImmutableMap;
 import org.apache.http.client.fluent.Request;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.jtwig.environment.EnvironmentConfigurationBuilder;
+import org.jtwig.web.servlet.JtwigRenderer;
 import org.junit.Test;
 
 import javax.servlet.ServletException;
@@ -15,28 +17,34 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-public class PathFunctionTest extends AbstractIntegrationTest {
-    @Test
-    public void pathTest() throws Exception {
+public class HelloMapWorldTest extends AbstractIntegrationTest {
 
-        String content = Request.Get(String.format("%s/hello", serverUrl()))
+
+    @Test
+    public void helloWorldTest() throws Exception {
+        String content = Request.Get(serverUrl())
                 .execute().returnContent().asString();
 
-        assertThat(content, is("/hello - /hello/one"));
+        assertThat(content, is("Hello Jtwig two!"));
     }
 
     @Override
     protected void setUpContext(ServletContextHandler context) {
-        context.setContextPath("/hello");
-        context.addServlet(new ServletHolder(new PathTestServlet()), "/*");
+        context.addServlet(new ServletHolder(new HelloServlet()), "/*");
     }
 
-    public static class PathTestServlet extends HttpServlet {
+
+    public static class HelloServlet extends HttpServlet {
         private final JtwigRenderer renderer = new JtwigRenderer(EnvironmentConfigurationBuilder.configuration().build());
 
         @Override
         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-            renderer.inlineDispatcherFor("{{ path() }} - {{ path('/one') }}")
+            request.setAttribute("one", " two");
+
+            renderer.dispatcherFor("/WEB-INF/templates/example.twig")
+                    .with(ImmutableMap.<String, Object>builder()
+                            .put("name", "Jtwig")
+                            .build())
                     .render(request, response);
         }
     }

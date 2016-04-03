@@ -16,13 +16,14 @@ public class QueryStringParametersFactory {
             for (NameValuePair nameValuePair : nameValuePairs) {
                 String key = nameValuePair.getName();
                 if (result.containsKey(key)) {
-                    final Object value = result.get(key);
+                    Object value = result.get(key);
                     if (value instanceof Collection) {
-                        ((Collection) value).add(value);
+                        ((Collection) value).add(nameValuePair.getValue());
                     } else {
-                        result.put(key, new ArrayList() {{
-                            add(value);
-                        }});
+                        ArrayList<Object> objects = new ArrayList<>();
+                        objects.add(result.get(key));
+                        objects.add(nameValuePair.getValue());
+                        result.put(key, objects);
                     }
                 } else {
                     result.put(key, nameValuePair.getValue());
