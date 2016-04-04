@@ -34,4 +34,20 @@ public class WebResource implements Resource {
     public Charset getCharset() {
         return charset;
     }
+
+    @Override
+    public int hashCode() {
+        return location.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        WebResource that = (WebResource) o;
+
+        return that.location.equals(location);
+    }
 }
