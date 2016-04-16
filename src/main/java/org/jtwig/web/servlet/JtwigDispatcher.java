@@ -5,6 +5,7 @@ import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.jtwig.environment.Environment;
 import org.jtwig.resource.Resource;
+import org.jtwig.web.servlet.model.factory.ApplicationFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -18,10 +19,12 @@ public class JtwigDispatcher {
     private final JtwigModel model = new JtwigModel();
     private final Environment environment;
     private final String location;
+    private final ApplicationFactory applicationFactory;
 
-    public JtwigDispatcher(Environment environment, String location) {
+    public JtwigDispatcher(Environment environment, String location, ApplicationFactory applicationFactory) {
         this.environment = environment;
         this.location = location;
+        this.applicationFactory = applicationFactory;
     }
 
     public JtwigDispatcher with (String name, Object value) {
@@ -42,6 +45,7 @@ public class JtwigDispatcher {
         ServletRequestHolder.set(request);
         ServletResponseHolder.set(response);
 
+        model.with("app", applicationFactory.create(request));
         Optional<Resource> optional = environment.getResourceEnvironment().getResourceResolver().resolve(environment, null, location);
         if (optional.isPresent()) {
             new JtwigTemplate(environment, optional.get()).render(model, response.getOutputStream());
