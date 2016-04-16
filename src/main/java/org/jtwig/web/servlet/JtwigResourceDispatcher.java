@@ -4,7 +4,7 @@ import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.jtwig.environment.Environment;
 import org.jtwig.resource.Resource;
-import org.jtwig.web.servlet.model.factory.*;
+import org.jtwig.web.servlet.model.factory.ApplicationFactory;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -17,16 +17,12 @@ public class JtwigResourceDispatcher {
     private final JtwigModel model = new JtwigModel();
     private final Environment environment;
     private final Resource resource;
-    private final ApplicationFactory applicationFactory = new ApplicationFactory(new HttpRequestFactory(
-            new FormParametersFactory(),
-            new QueryStringParametersFactory(),
-            new SessionParametersFactory(),
-            new CookieParametersFactory()
-    ));
+    private final ApplicationFactory applicationFactory;
 
-    public JtwigResourceDispatcher(Environment environment, Resource resource) {
+    public JtwigResourceDispatcher(Environment environment, Resource resource, ApplicationFactory applicationFactory) {
         this.environment = environment;
         this.resource = resource;
+        this.applicationFactory = applicationFactory;
     }
 
     public JtwigResourceDispatcher with (String name, Object value) {

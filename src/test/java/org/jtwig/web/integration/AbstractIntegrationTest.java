@@ -18,7 +18,7 @@ public abstract class AbstractIntegrationTest {
         server = new Server(0);
         ServletContextHandler context = new ServletContextHandler();
         context.setContextPath("/");
-        context.setBaseResource(new FileResource(new File("src/main/webapp").getAbsoluteFile().toURI().toURL()));
+        context.setBaseResource(new FileResource(new File("src/test/webapp").getAbsoluteFile().toURI().toURL()));
         setUpContext(context);
         server.setHandler(context);
         server.start();

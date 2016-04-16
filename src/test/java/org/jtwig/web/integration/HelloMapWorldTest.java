@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.http.client.fluent.Request;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.jtwig.environment.EnvironmentConfigurationBuilder;
 import org.jtwig.web.servlet.JtwigRenderer;
 import org.junit.Test;
 
@@ -35,7 +34,7 @@ public class HelloMapWorldTest extends AbstractIntegrationTest {
 
 
     public static class HelloServlet extends HttpServlet {
-        private final JtwigRenderer renderer = new JtwigRenderer(EnvironmentConfigurationBuilder.configuration().build());
+        private final JtwigRenderer renderer = JtwigRenderer.defaultRenderer();
 
         @Override
         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
