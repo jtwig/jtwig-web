@@ -27,8 +27,8 @@ public class WebResourceResolver implements ResourceResolver {
         }
 
         File relativeFile = new File(relativePath);
-        if(!relativeFile.isAbsolute()) {
-            if(WebResource.class.isAssignableFrom(resource.getClass())) {
+        if(!relativeFile.isAbsolute() && resource != null) {
+            if (WebResource.class.isAssignableFrom(resource.getClass())) {
                 File parentFile = ((WebResource)resource).getFile().getParentFile();
                 File file = new File(parentFile, relativePath);
                 return this.resolve(environment, file);
