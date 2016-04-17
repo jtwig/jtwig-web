@@ -53,6 +53,18 @@ public class WebResourceResolverTest {
     }
 
     @Test
+    public void resolveWithNull() throws Exception {
+        Environment environment = mock(Environment.class);
+        WebResource resource = mock(WebResource.class);
+
+        when(resource.getFile()).thenReturn(new File("a"));
+
+        Optional<Resource> result = underTest.resolve(environment, null, "web:path");
+
+        assertEquals(false, result.isPresent());
+    }
+
+    @Test
     public void resolveMalformedUrl() throws Exception {
         Environment environment = mock(Environment.class);
         WebResource resource = mock(WebResource.class);
