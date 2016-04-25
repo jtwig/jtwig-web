@@ -1,10 +1,9 @@
 package org.jtwig.web.servlet;
 
-import com.google.common.base.Optional;
 import org.jtwig.JtwigModel;
 import org.jtwig.JtwigTemplate;
 import org.jtwig.environment.Environment;
-import org.jtwig.resource.Resource;
+import org.jtwig.resource.reference.ResourceReference;
 import org.jtwig.web.servlet.model.factory.ApplicationFactory;
 
 import javax.servlet.ServletException;
@@ -18,12 +17,12 @@ import java.util.Map;
 public class JtwigDispatcher {
     private final JtwigModel model = new JtwigModel();
     private final Environment environment;
-    private final String location;
+    private final ResourceReference resourceReference;
     private final ApplicationFactory applicationFactory;
 
-    public JtwigDispatcher(Environment environment, String location, ApplicationFactory applicationFactory) {
+    public JtwigDispatcher(Environment environment, ResourceReference resourceReference, ApplicationFactory applicationFactory) {
         this.environment = environment;
-        this.location = location;
+        this.resourceReference = resourceReference;
         this.applicationFactory = applicationFactory;
     }
 
@@ -46,12 +45,8 @@ public class JtwigDispatcher {
         ServletResponseHolder.set(response);
 
         model.with("app", applicationFactory.create(request));
-        Optional<Resource> optional = environment.getResourceEnvironment().getResourceResolver().resolve(environment, null, location);
-        if (optional.isPresent()) {
-            new JtwigTemplate(environment, optional.get()).render(model, response.getOutputStream());
-        } else {
-            throw new IllegalArgumentException(String.format("Unable to load resource '%s'", location));
-        }
+        JtwigTemplate jtwigTemplate = new JtwigTemplate(environment, resourceReference);
+        jtwigTemplate.render(model, response.getOutputStream());
     }
 
     private void fillModelWithRequest(ServletRequest request) {

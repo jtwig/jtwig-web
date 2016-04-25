@@ -1,6 +1,7 @@
 package org.jtwig.web.integration;
 
 import org.apache.http.client.fluent.Request;
+import org.apache.http.client.fluent.Response;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.jtwig.environment.EnvironmentConfigurationBuilder;
@@ -16,15 +17,13 @@ import java.io.IOException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 
-public class HelloWorldTest extends AbstractIntegrationTest {
-
-
+public class NoTemplateTest extends AbstractIntegrationTest {
     @Test
-    public void helloWorldTest() throws Exception {
-        String content = Request.Get(serverUrl())
-                .execute().returnContent().asString();
+    public void noTemplateTest() throws Exception {
+        Response response = Request.Get(serverUrl())
+                .execute();
 
-        assertThat(content, is("Hello Jtwigtwo!"));
+        assertThat(response.returnResponse().getStatusLine().getStatusCode(), is(500));
     }
 
     @Override
@@ -40,7 +39,7 @@ public class HelloWorldTest extends AbstractIntegrationTest {
         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
             request.setAttribute("one", "two");
 
-            renderer.dispatcherFor("web:/WEB-INF/templates/example.twig")
+            renderer.dispatcherFor("/WEB-INF/templates/unknown.twig")
                     .with("name", "Jtwig")
                     .render(request, response);
         }
