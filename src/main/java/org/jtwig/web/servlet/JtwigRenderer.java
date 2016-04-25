@@ -1,10 +1,14 @@
 package org.jtwig.web.servlet;
 
 import org.jtwig.environment.*;
-import org.jtwig.resource.StringResource;
+import org.jtwig.resource.reference.ResourceReference;
+import org.jtwig.resource.resolver.PathRelativeResourceResolver;
+import org.jtwig.resource.resolver.path.RelativePathResolver;
 import org.jtwig.web.functions.PathFunction;
-import org.jtwig.web.resource.resolver.WebResourceResolver;
+import org.jtwig.web.resource.WebResourceLoader;
 import org.jtwig.web.servlet.model.factory.*;
+
+import java.util.Collections;
 
 public class JtwigRenderer {
     public static JtwigRenderer defaultRenderer () {
@@ -17,7 +21,10 @@ public class JtwigRenderer {
     public JtwigRenderer(EnvironmentConfiguration configuration) {
         EnvironmentFactory environmentFactory = new EnvironmentFactory();
         this.environment = environmentFactory.create(new EnvironmentConfigurationBuilder(configuration)
-                .resources().resourceResolvers().add(new WebResourceResolver()).and().and()
+                .resources()
+                    .resourceResolvers().add(new PathRelativeResourceResolver(Collections.singleton(WebResourceLoader.TYPE), RelativePathResolver.instance())).and()
+                    .resourceLoaders().add(WebResourceLoader.TYPE, new WebResourceLoader(ServletContextSupplier.instance())).and()
+                .and()
                 .functions().add(new PathFunction()).and()
                 .build());
 
@@ -30,8 +37,14 @@ public class JtwigRenderer {
     }
 
     public JtwigDispatcher dispatcherFor (String location) {
-        return new JtwigDispatcher(environment, location, applicationFactory);
+        ResourceReference resourceReference = environment.getResourceEnvironment().getResourceReferenceExtractor().extract(location);
+        if (ResourceReference.ANY_TYPE.equals(resourceReference.getType())) {
+            resourceReference = new ResourceReference(WebResourceLoader.TYPE, resourceReference.getPath());
+        }
+        return new JtwigDispatcher(environment, resourceReference, applicationFactory);
     }
 
-    public JtwigResourceDispatcher inlineDispatcherFor (String template) { return new JtwigResourceDispatcher(environment, new StringResource(template), applicationFactory); }
+    public JtwigDispatcher inlineDispatcherFor (String template) {
+        return new JtwigDispatcher(environment, new ResourceReference(ResourceReference.STRING, template), applicationFactory);
+    }
 }
