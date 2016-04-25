@@ -40,7 +40,7 @@ public class HelloWorldTest extends AbstractIntegrationTest {
         protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
             request.setAttribute("one", "two");
 
-            renderer.dispatcherFor("/WEB-INF/templates/example.twig")
+            renderer.dispatcherFor("web:/WEB-INF/templates/example.twig")
                     .with("name", "Jtwig")
                     .render(request, response);
         }
