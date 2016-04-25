@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import javax.servlet.ServletContext;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 
@@ -60,6 +61,17 @@ public class WebResourceLoaderTest {
     }
 
     @Test
+    public void existsException() throws Exception {
+        ServletContext servletContext = mock(ServletContext.class);
+        when(servletContextSupplier.get()).thenReturn(servletContext);
+        when(servletContext.getResource("path")).thenThrow(MalformedURLException.class);
+
+        boolean result = underTest.exists("path");
+
+        assertSame(false, result);
+    }
+
+    @Test
     public void toUrl() throws Exception {
         URL url = new URL("file:/");
         ServletContext servletContext = mock(ServletContext.class);
@@ -69,5 +81,16 @@ public class WebResourceLoaderTest {
         Optional<URL> result = underTest.toUrl("path");
 
         assertSame(url, result.get());
+    }
+
+    @Test
+    public void toUrlException() throws Exception {
+        ServletContext servletContext = mock(ServletContext.class);
+        when(servletContextSupplier.get()).thenReturn(servletContext);
+        when(servletContext.getResource("path")).thenThrow(MalformedURLException.class);
+
+        Optional<URL> result = underTest.toUrl("path");
+
+        assertThat(result.isPresent(), is(false));
     }
 }
