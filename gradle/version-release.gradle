@@ -1,4 +1,5 @@
 apply plugin: 'java'
+apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 version = releaseVersion()
@@ -57,7 +58,7 @@ artifacts {
 
 publishing {
     publications {
-        mavenCustom(MavenPublication) {
+        BintrayArchives(MavenPublication) {
             from components.java
 
             pom.withXml {
