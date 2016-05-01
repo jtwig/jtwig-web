@@ -1,6 +1,7 @@
 package org.jtwig.web.servlet;
 
 import org.jtwig.environment.*;
+import org.jtwig.resource.loader.TypedResourceLoader;
 import org.jtwig.resource.reference.ResourceReference;
 import org.jtwig.resource.resolver.PathRelativeResourceResolver;
 import org.jtwig.resource.resolver.path.RelativePathResolver;
@@ -22,8 +23,8 @@ public class JtwigRenderer {
         EnvironmentFactory environmentFactory = new EnvironmentFactory();
         this.environment = environmentFactory.create(new EnvironmentConfigurationBuilder(configuration)
                 .resources()
-                    .resourceResolvers().add(new PathRelativeResourceResolver(Collections.singleton(WebResourceLoader.TYPE), RelativePathResolver.instance())).and()
-                    .resourceLoaders().add(WebResourceLoader.TYPE, new WebResourceLoader(ServletContextSupplier.instance())).and()
+                    .relativeResourceResolvers().add(new PathRelativeResourceResolver(Collections.singleton(WebResourceLoader.TYPE), RelativePathResolver.instance())).and()
+                    .resourceLoaders().add(new TypedResourceLoader(WebResourceLoader.TYPE, new WebResourceLoader(ServletContextSupplier.instance()))).and()
                 .and()
                 .functions().add(new PathFunction()).and()
                 .build());
