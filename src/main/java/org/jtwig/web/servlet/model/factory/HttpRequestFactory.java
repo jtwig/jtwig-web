@@ -21,6 +21,7 @@ public class HttpRequestFactory {
 
     public HttpRequest create (HttpServletRequest request) {
         return new HttpRequest(
+                request.getPathInfo(),
                 formParametersFactory.create(request),
                 queryStringParametersFactory.create(request),
                 sessionParametersFactory.create(request),
