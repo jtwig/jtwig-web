@@ -50,7 +50,7 @@ public class JtwigDispatcher {
 
         ResourceMetadata resourceMetadata = environment.getResourceEnvironment().getResourceService().loadMetadata(resourceReference);
         if (!resourceMetadata.exists())
-            throw new ResourceNotFoundException(String.format("Resource %s not found", resourceMetadata));
+            throw new ResourceNotFoundException(String.format("Resource %s not found", resourceReference));
 
         JtwigTemplate jtwigTemplate = new JtwigTemplate(environment, resourceReference);
         jtwigTemplate.render(model, response.getOutputStream());
