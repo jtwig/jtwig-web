@@ -13,6 +13,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Enumeration;
 import java.util.Map;
 
@@ -48,12 +49,17 @@ public class JtwigDispatcher {
 
         model.with("app", applicationFactory.create(request));
 
+        render(response.getOutputStream());
+    }
+
+    public void render (OutputStream outputStream) {
         ResourceMetadata resourceMetadata = environment.getResourceEnvironment().getResourceService().loadMetadata(resourceReference);
         if (!resourceMetadata.exists())
             throw new ResourceNotFoundException(String.format("Resource %s not found", resourceReference));
 
+
         JtwigTemplate jtwigTemplate = new JtwigTemplate(environment, resourceReference);
-        jtwigTemplate.render(model, response.getOutputStream());
+        jtwigTemplate.render(model, outputStream);
     }
 
     private void fillModelWithRequest(ServletRequest request) {

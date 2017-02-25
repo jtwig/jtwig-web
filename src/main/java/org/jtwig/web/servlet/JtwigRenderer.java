@@ -48,4 +48,8 @@ public class JtwigRenderer {
     public JtwigDispatcher inlineDispatcherFor (String template) {
         return new JtwigDispatcher(environment, new ResourceReference(ResourceReference.STRING, template), applicationFactory);
     }
+
+    public Environment getEnvironment() {
+        return environment;
+    }
 }
