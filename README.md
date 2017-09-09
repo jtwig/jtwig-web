@@ -3,7 +3,7 @@
 **Build Stats**
 
 [![Build Status](https://travis-ci.org/jtwig/jtwig-web.svg?branch=master)](https://travis-ci.org/jtwig/jtwig-web)
-[![Coverage Status](https://coveralls.io/repos/github/jtwig/jtwig-web/badge.svg?branch=master)](https://coveralls.io/github/jtwig/jtwig-web?branch=master)
+[![codecov](https://codecov.io/gh/jtwig/jtwig-web/branch/master/graph/badge.svg)](https://codecov.io/gh/jtwig/jtwig-web)
 [![Download](https://api.bintray.com/packages/jtwig/maven/jtwig-web/images/download.svg) ](https://bintray.com/jtwig/maven/jtwig-web/_latestVersion)
 
 
